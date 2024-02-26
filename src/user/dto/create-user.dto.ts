@@ -34,6 +34,9 @@ export class CreateUserDto {
   @IsString()
   gender: string;
 
+  @IsString()
+  picture: string;
+
   @IsNotEmpty()
   @Matches(passwordRegEx, {
     message: `Password must contain

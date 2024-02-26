@@ -7,10 +7,15 @@ import {
   Param,
   Delete,
   HttpCode,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @Controller('user')
 export class UserController {
@@ -41,5 +46,24 @@ export class UserController {
   @HttpCode(204)
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Post('picture/:id')
+  @HttpCode(200)
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './media',
+        filename: (_req, file, callback) => {
+          callback(null, file.originalname);
+        },
+      }),
+    }),
+  )
+  uploadPicture(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.userService.uploadPicture(+id, file);
   }
 }

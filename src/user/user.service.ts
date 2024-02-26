@@ -18,6 +18,7 @@ export class UserService {
     user.email = createUserDto.email;
     user.username = createUserDto.username;
     user.password = createUserDto.password;
+    user.picture = createUserDto.picture;
     user.gender = createUserDto.gender;
     return this.userRepository.save(user);
   }
@@ -42,6 +43,7 @@ export class UserService {
     await this.findOne(id);
 
     const user: User = new User();
+
     user.name = updateUserDto.name;
     user.age = updateUserDto.age;
     user.email = updateUserDto.email;
@@ -54,5 +56,13 @@ export class UserService {
   async remove(id: number) {
     await this.findOne(id);
     await this.userRepository.delete(id);
+  }
+
+  async uploadPicture(id: number, file: Express.Multer.File) {
+    const user = await this.findOne(id);
+
+    user.picture = process.env.APP_URL + '/' + file.path;
+
+    return await this.userRepository.save(user);
   }
 }

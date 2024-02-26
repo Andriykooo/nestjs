@@ -18,6 +18,9 @@ export class User {
   age: number;
 
   @Column({ type: 'varchar' })
+  picture: string;
+
+  @Column({ type: 'varchar' })
   password: string;
 
   @Column({ type: 'enum', enum: ['m', 'f', 'u'] })
