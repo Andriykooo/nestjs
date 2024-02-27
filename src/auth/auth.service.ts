@@ -2,6 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Users } from 'src/users/entities/users.entity';
+import { JwtResponse } from './auth.type';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +12,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(email: string, pass: string): Promise<any> {
+  async validateUser(email: string, pass: string): Promise<Users> {
     const user = await this.usersService.findOneByEmail(email);
 
     if (!user) {
@@ -23,6 +25,10 @@ export class AuthService {
       throw new BadRequestException('Incorrect password');
     }
 
+    return user;
+  }
+
+  async signIn(user: Users): Promise<JwtResponse> {
     const payload = { id: user.id, email: user.email };
 
     return {

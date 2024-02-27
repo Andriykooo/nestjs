@@ -10,6 +10,8 @@ import {
   UseInterceptors,
   UploadedFile,
   ClassSerializerInterceptor,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dto/create-users.dto';
@@ -17,6 +19,8 @@ import { UpdateUsersDto } from './dto/update-users.dto';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { JwtRequest } from 'src/auth/auth.type';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
@@ -38,19 +42,21 @@ export class UsersController {
     return this.userService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUsersDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Patch()
+  @UseGuards(JwtAuthGuard)
+  update(@Request() req: JwtRequest, @Body() updateUserDto: UpdateUsersDto) {
+    return this.userService.update(+req.user.id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete()
   @HttpCode(204)
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  remove(@Request() req: JwtRequest) {
+    return this.userService.remove(+req.user.id);
   }
 
-  @Post('picture/:id')
-  @HttpCode(200)
+  @Post('picture')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -62,9 +68,9 @@ export class UsersController {
     }),
   )
   uploadPicture(
-    @Param('id') id: string,
+    @Request() req: JwtRequest,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.userService.uploadPicture(+id, file);
+    return this.userService.uploadPicture(+req.user.id, file);
   }
 }
