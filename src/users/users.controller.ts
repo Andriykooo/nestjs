@@ -12,6 +12,7 @@ import {
   ClassSerializerInterceptor,
   UseGuards,
   Request,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUsersDto } from './dto/update-users.dto';
@@ -27,22 +28,26 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Get('get-all-users')
+  @HttpCode(HttpStatus.OK)
   findAll() {
     return this.userService.findAll();
   }
 
   @Get('get-user/:id')
+  @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
   @Get('me')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   me(@Request() req: JwtRequest) {
     return this.userService.findOne(+req.user.id);
   }
 
   @Patch('update')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   update(@Request() req: JwtRequest, @Body() updateUserDto: UpdateUsersDto) {
     return this.userService.update(+req.user.id, updateUserDto);
@@ -56,6 +61,7 @@ export class UsersController {
   }
 
   @Post('picture')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('image', {
