@@ -1,23 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { CreateUsersDto } from './dto/create-users.dto';
+import { UpdateUsersDto } from './dto/update-users.dto';
+import { Users } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Users) private readonly userRepository: Repository<Users>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUsersDto): Promise<Users> {
+    const isUserExist = await this.findOneByEmail(createUserDto.email);
+
+    if (isUserExist) {
+      throw new BadRequestException('User with this email already exist');
+    }
+
     const saltOrRounds = 10;
-    const password = 'random_password';
+    const password = createUserDto.password;
     const hashedPassword = await bcrypt.hash(password, saltOrRounds);
 
-    const user: User = new User();
+    const user: Users = new Users();
     user.name = createUserDto.name;
     user.age = createUserDto.age;
     user.email = createUserDto.email;
@@ -28,11 +38,11 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  findAll(): Promise<User[]> {
+  findAll(): Promise<Users[]> {
     return this.userRepository.find();
   }
 
-  async findOne(id: number): Promise<User> {
+  async findOne(id: number): Promise<Users> {
     const user = await this.userRepository.findOneBy({
       id,
     });
@@ -44,10 +54,18 @@ export class UserService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async findOneByEmail(email: string): Promise<Users> {
+    const user = await this.userRepository.findOneBy({
+      email,
+    });
+
+    return user;
+  }
+
+  async update(id: number, updateUserDto: UpdateUsersDto): Promise<Users> {
     await this.findOne(id);
 
-    const user: User = new User();
+    const user: Users = new Users();
 
     user.name = updateUserDto.name;
     user.age = updateUserDto.age;
