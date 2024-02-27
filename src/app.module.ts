@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { Users } from './users/entities/users.entity';
 import { AuthModule } from './auth/auth.module';
+import { GamesModule } from './games/games.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    GamesModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
