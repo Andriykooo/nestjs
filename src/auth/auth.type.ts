@@ -5,6 +5,7 @@ export type JwtPayload = {
 
 export type JwtResponse = {
   access_token: string;
+  refresh_token: string;
 };
 
 export type JwtRequest = {

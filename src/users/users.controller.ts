@@ -14,7 +14,6 @@ import {
   Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUsersDto } from './dto/update-users.dto';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -26,11 +25,6 @@ import { JwtRequest } from 'src/auth/auth.type';
 @Controller('user')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
-
-  @Post('create')
-  create(@Body() createUserDto: CreateUsersDto) {
-    return this.userService.create(createUserDto);
-  }
 
   @Get('get-all-users')
   findAll() {

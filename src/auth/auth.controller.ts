@@ -10,6 +10,8 @@ import {
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { Users } from 'src/users/entities/users.entity';
+import { CreateUsersDto } from 'src/users/dto/create-users.dto';
+import { JwtRefreshGuard } from './guard/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +20,20 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
-  signIn(@Request() req: { user: Users }) {
-    return this.authService.signIn(req.user);
+  logIn(@Request() req: { user: Users }) {
+    return this.authService.logIn(req.user);
+  }
+
+  @Post('register')
+  @HttpCode(HttpStatus.OK)
+  register(@Body() createUserDto: CreateUsersDto) {
+    return this.authService.register(createUserDto);
+  }
+
+  @Post('refresh-token')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtRefreshGuard)
+  refreshToken(@Request() req: { user: Users }) {
+    return this.authService.refreshToken(req.user);
   }
 }
