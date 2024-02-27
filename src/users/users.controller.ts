@@ -27,28 +27,34 @@ import { JwtRequest } from 'src/auth/auth.type';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createUserDto: CreateUsersDto) {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
+  @Get('get-all-users')
   findAll() {
     return this.userService.findAll();
   }
 
-  @Get(':id')
+  @Get('get-user/:id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
-  @Patch()
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  me(@Request() req: JwtRequest) {
+    return this.userService.findOne(+req.user.id);
+  }
+
+  @Patch('update')
   @UseGuards(JwtAuthGuard)
   update(@Request() req: JwtRequest, @Body() updateUserDto: UpdateUsersDto) {
     return this.userService.update(+req.user.id, updateUserDto);
   }
 
-  @Delete()
+  @Delete('delete')
   @HttpCode(204)
   @UseGuards(JwtAuthGuard)
   remove(@Request() req: JwtRequest) {
