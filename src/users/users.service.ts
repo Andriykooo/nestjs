@@ -6,17 +6,19 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUsersDto } from './dto/update-users.dto';
-import { Users } from './entities/users.entity';
+import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { GamesService } from 'src/games/games.service';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(Users) private readonly userRepository: Repository<Users>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private gamesSrvice: GamesService,
   ) {}
 
-  async create(createUserDto: CreateUsersDto): Promise<Users> {
+  async create(createUserDto: CreateUsersDto): Promise<User> {
     const isUserExist = await this.findOneByEmail(createUserDto.email);
 
     if (isUserExist) {
@@ -27,24 +29,29 @@ export class UsersService {
     const password = createUserDto.password;
     const hashedPassword = await bcrypt.hash(password, saltOrRounds);
 
-    const user: Users = new Users();
+    const user: User = new User();
     user.name = createUserDto.name;
     user.age = createUserDto.age;
     user.email = createUserDto.email;
     user.username = createUserDto.username;
     user.password = hashedPassword;
-    user.picture = createUserDto.picture;
     user.gender = createUserDto.gender;
+    user.picture = '';
     return this.userRepository.save(user);
   }
 
-  findAll(): Promise<Users[]> {
+  findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  async findOne(id: number): Promise<Users> {
-    const user = await this.userRepository.findOneBy({
-      id,
+  async findOne(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        games: true,
+      },
     });
 
     if (!user) {
@@ -54,25 +61,29 @@ export class UsersService {
     return user;
   }
 
-  async findOneByEmail(email: string): Promise<Users> {
-    const user = await this.userRepository.findOneBy({
-      email,
+  async findOneByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: {
+        email,
+      },
     });
 
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUsersDto): Promise<Users> {
+  async update(id: number, updateUserDto: UpdateUsersDto): Promise<User> {
     await this.findOne(id);
 
-    const user: Users = new Users();
+    const user: User = new User();
 
     user.name = updateUserDto.name;
     user.age = updateUserDto.age;
     user.email = updateUserDto.email;
     user.username = updateUserDto.username;
     user.password = updateUserDto.password;
+    user.gender = updateUserDto.gender;
     user.id = id;
+
     return await this.userRepository.save(user);
   }
 
@@ -87,5 +98,14 @@ export class UsersService {
     user.picture = process.env.APP_URL + '/' + file.path;
 
     return await this.userRepository.save(user);
+  }
+
+  async addGame(userId: number, gameId: number) {
+    const user = await this.findOne(userId);
+    const game = await this.gamesSrvice.findOne(gameId);
+
+    user.games.push(game);
+
+    await this.userRepository.save(user);
   }
 }

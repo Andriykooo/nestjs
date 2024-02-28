@@ -79,4 +79,11 @@ export class UsersController {
   ) {
     return this.userService.uploadPicture(+req.user.id, file);
   }
+
+  @Post('add-game/:id')
+  @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
+  addGame(@Request() req: JwtRequest, @Param('id') id: string) {
+    return this.userService.addGame(+req.user.id, +id);
+  }
 }

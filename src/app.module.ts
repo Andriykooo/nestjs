@@ -4,10 +4,10 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { Users } from './users/entities/users.entity';
+import { User } from './users/entities/users.entity';
 import { AuthModule } from './auth/auth.module';
 import { GamesModule } from './games/games.module';
-import { CategoriesModule } from './categories/categories.module';
+import { Game } from './games/entities/game.entity';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { CategoriesModule } from './categories/categories.module';
       port: 5432,
       password: process.env.POSTGRES_PASSWORD,
       username: process.env.POSTGRES_USER,
-      entities: [Users],
+      entities: [User, Game],
       database: process.env.POSTGRES_DB,
       synchronize: true,
       logging: true,
@@ -26,7 +26,6 @@ import { CategoriesModule } from './categories/categories.module';
     UsersModule,
     AuthModule,
     GamesModule,
-    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

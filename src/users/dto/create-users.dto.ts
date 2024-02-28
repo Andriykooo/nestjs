@@ -34,7 +34,6 @@ export class CreateUsersDto {
   @IsString()
   gender: string;
 
-  @IsString()
   picture: string;
 
   @IsNotEmpty()

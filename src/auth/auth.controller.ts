@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
-import { Users } from 'src/users/entities/users.entity';
+import { User } from 'src/users/entities/users.entity';
 import { CreateUsersDto } from 'src/users/dto/create-users.dto';
 import { JwtRefreshGuard } from './guard/jwt-refresh.guard';
 
@@ -20,7 +20,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
-  logIn(@Request() req: { user: Users }) {
+  logIn(@Request() req: { user: User }) {
     return this.authService.logIn(req.user);
   }
 
@@ -33,7 +33,7 @@ export class AuthController {
   @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtRefreshGuard)
-  refreshToken(@Request() req: { user: Users }) {
+  refreshToken(@Request() req: { user: User }) {
     return this.authService.refreshToken(req.user);
   }
 }

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Users } from 'src/users/entities/users.entity';
+import { User } from 'src/users/entities/users.entity';
 import { JwtResponse } from './auth.type';
 import { CreateUsersDto } from 'src/users/dto/create-users.dto';
 
@@ -13,7 +13,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<Users> {
+  async validateUser(email: string, pass: string): Promise<User> {
     const user = await this.usersService.findOneByEmail(email);
 
     if (!user) {
@@ -29,13 +29,13 @@ export class AuthService {
     return user;
   }
 
-  async logIn(user: Users): Promise<{ user: Users } & JwtResponse> {
+  async logIn(user: User): Promise<{ user: User } & JwtResponse> {
     const payload = { id: user.id, email: user.email };
 
     return {
       user,
       access_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '2m',
+        expiresIn: '5m',
       }),
       refresh_token: await this.jwtService.signAsync(payload, {
         expiresIn: '7d',
@@ -45,18 +45,18 @@ export class AuthService {
 
   async register(
     createUserDto: CreateUsersDto,
-  ): Promise<{ user: Users } & JwtResponse> {
+  ): Promise<{ user: User } & JwtResponse> {
     const newUser = await this.usersService.create(createUserDto);
 
     return this.logIn(newUser);
   }
 
-  async refreshToken(user: Users): Promise<Omit<JwtResponse, 'refresh_token'>> {
+  async refreshToken(user: User): Promise<Omit<JwtResponse, 'refresh_token'>> {
     const payload = { id: user.id, email: user.email };
 
     return {
       access_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '2m',
+        expiresIn: '5m',
       }),
     };
   }

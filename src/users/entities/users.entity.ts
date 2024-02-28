@@ -1,8 +1,15 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Game } from 'src/games/entities/game.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
-export class Users {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -32,4 +39,8 @@ export class Users {
    * u - unspecified
    */
   gender: string;
+
+  @ManyToMany(() => Game, (game) => game.users)
+  @JoinTable()
+  games: Game[];
 }
