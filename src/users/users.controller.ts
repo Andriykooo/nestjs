@@ -21,8 +21,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { JwtRequest } from 'src/auth/auth.type';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseInterceptors(ClassSerializerInterceptor)
+@ApiTags('user')
 @Controller('user')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
