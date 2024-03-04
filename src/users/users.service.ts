@@ -10,12 +10,15 @@ import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { GamesService } from 'src/games/games.service';
+import { GameCommentsService } from 'src/game-comments/game-comments.service';
+import { CreateGameCommentDto } from 'src/game-comments/dto/create-game-comment.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private gamesSrvice: GamesService,
+    private gameCommentsService: GameCommentsService,
   ) {}
 
   async create(createUserDto: CreateUsersDto): Promise<User> {
@@ -33,7 +36,6 @@ export class UsersService {
     user.name = createUserDto.name;
     user.age = createUserDto.age;
     user.email = createUserDto.email;
-    user.username = createUserDto.username;
     user.password = hashedPassword;
     user.gender = createUserDto.gender;
     user.picture = '';
@@ -79,7 +81,6 @@ export class UsersService {
     user.name = updateUserDto.name;
     user.age = updateUserDto.age;
     user.email = updateUserDto.email;
-    user.username = updateUserDto.username;
     user.password = updateUserDto.password;
     user.gender = updateUserDto.gender;
     user.id = id;
@@ -107,5 +108,28 @@ export class UsersService {
     user.games.push(game);
 
     await this.userRepository.save(user);
+  }
+
+  async removeGame(userId: number, gameId: number) {
+    const user = await this.findOne(userId);
+
+    user.games = user.games.filter((game) => game.id !== gameId);
+
+    await this.userRepository.save(user);
+  }
+
+  async addComment(
+    userId: number,
+    gameId: number,
+    createGameCommentDto: CreateGameCommentDto,
+  ) {
+    const user = await this.findOne(userId);
+    const game = await this.gamesSrvice.findOne(gameId);
+    await this.gameCommentsService.create(user, game, createGameCommentDto);
+  }
+
+  async removeComment(userId: number, commentId: number) {
+    await this.findOne(userId);
+    await this.gameCommentsService.remove(commentId, userId);
   }
 }

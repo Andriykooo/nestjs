@@ -1,5 +1,12 @@
+import { GameComment } from 'src/game-comments/entities/game-comment.entity';
 import { User } from 'src/users/entities/users.entity';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Game {
@@ -11,4 +18,7 @@ export class Game {
 
   @ManyToMany(() => User, (user) => user.games)
   users: User[];
+
+  @OneToMany(() => GameComment, (gameComment) => gameComment.game)
+  gameComments: GameComment[];
 }

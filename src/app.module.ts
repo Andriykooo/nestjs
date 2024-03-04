@@ -8,6 +8,8 @@ import { User } from './users/entities/users.entity';
 import { AuthModule } from './auth/auth.module';
 import { GamesModule } from './games/games.module';
 import { Game } from './games/entities/game.entity';
+import { GameCommentsModule } from './game-comments/game-comments.module';
+import { GameComment } from './game-comments/entities/game-comment.entity';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { Game } from './games/entities/game.entity';
       port: 5432,
       password: process.env.POSTGRES_PASSWORD,
       username: process.env.POSTGRES_USER,
-      entities: [User, Game],
+      entities: [User, Game, GameComment],
       database: process.env.POSTGRES_DB,
       synchronize: true,
       logging: true,
@@ -26,6 +28,7 @@ import { Game } from './games/entities/game.entity';
     UsersModule,
     AuthModule,
     GamesModule,
+    GameCommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

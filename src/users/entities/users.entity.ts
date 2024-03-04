@@ -1,10 +1,12 @@
 import { Exclude } from 'class-transformer';
+import { GameComment } from 'src/game-comments/entities/game-comment.entity';
 import { Game } from 'src/games/entities/game.entity';
 import {
   Column,
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -15,9 +17,6 @@ export class User {
 
   @Column({ type: 'varchar', length: 30 })
   name: string;
-
-  @Column({ type: 'varchar', length: 15 })
-  username: string;
 
   @Column({ type: 'varchar', length: 40 })
   email: string;
@@ -43,4 +42,7 @@ export class User {
   @ManyToMany(() => Game, (game) => game.users)
   @JoinTable()
   games: Game[];
+
+  @OneToMany(() => GameComment, (gameComment) => gameComment.user)
+  gameComments: GameComment[];
 }
