@@ -1,5 +1,5 @@
-import { GameComment } from 'src/game-comments/entities/game-comment.entity';
-import { User } from 'src/users/entities/users.entity';
+import { GameComment } from 'src/modules/game-comments/entities/game-comment.entity';
+import { User } from 'src/modules/users/entities/users.entity';
 import {
   Column,
   Entity,

@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
-import { User } from 'src/users/entities/users.entity';
-import { CreateUsersDto } from 'src/users/dto/create-users.dto';
+import { User } from 'src/modules/users/entities/users.entity';
+import { CreateUsersDto } from 'src/modules/users/dto/create-users.dto';
 import { JwtRefreshGuard } from './guard/jwt-refresh.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { LogInDto } from './dto/logIn.dto';

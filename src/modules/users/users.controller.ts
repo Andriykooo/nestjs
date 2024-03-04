@@ -19,10 +19,10 @@ import { UpdateUsersDto } from './dto/update-users.dto';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { JwtRequest } from 'src/auth/auth.type';
+import { JwtAuthGuard } from 'src/modules/auth/guard/jwt-auth.guard';
+import { JwtRequest } from 'src/modules/auth/auth.type';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { CreateGameCommentDto } from 'src/game-comments/dto/create-game-comment.dto';
+import { CreateGameCommentDto } from 'src/modules/game-comments/dto/create-game-comment.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('user')

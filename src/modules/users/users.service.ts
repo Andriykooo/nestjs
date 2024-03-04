@@ -9,9 +9,9 @@ import { UpdateUsersDto } from './dto/update-users.dto';
 import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { GamesService } from 'src/games/games.service';
-import { GameCommentsService } from 'src/game-comments/game-comments.service';
-import { CreateGameCommentDto } from 'src/game-comments/dto/create-game-comment.dto';
+import { GamesService } from 'src/modules/games/games.service';
+import { GameCommentsService } from 'src/modules/game-comments/game-comments.service';
+import { CreateGameCommentDto } from 'src/modules/game-comments/dto/create-game-comment.dto';
 
 @Injectable()
 export class UsersService {

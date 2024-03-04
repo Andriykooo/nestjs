@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
-import { GameComment } from 'src/game-comments/entities/game-comment.entity';
-import { Game } from 'src/games/entities/game.entity';
+import { GameComment } from 'src/modules/game-comments/entities/game-comment.entity';
+import { Game } from 'src/modules/games/entities/game.entity';
 import {
   Column,
   Entity,
