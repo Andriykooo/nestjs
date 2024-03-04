@@ -20,6 +20,10 @@ async function bootstrap() {
     .setTitle('Cats')
     .setDescription('The cats API description')
     .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access_token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

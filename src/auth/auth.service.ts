@@ -3,8 +3,9 @@ import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/entities/users.entity';
-import { JwtResponse } from './auth.type';
+import { JwtPayload, JwtRequest, JwtResponse } from './auth.type';
 import { CreateUsersDto } from 'src/users/dto/create-users.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -35,7 +36,7 @@ export class AuthService {
     return {
       user,
       access_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '5m',
+        expiresIn: '30m',
       }),
       refresh_token: await this.jwtService.signAsync(payload, {
         expiresIn: '7d',
@@ -51,12 +52,14 @@ export class AuthService {
     return this.logIn(newUser);
   }
 
-  async refreshToken(user: User): Promise<Omit<JwtResponse, 'refresh_token'>> {
+  async refreshToken(
+    user: JwtPayload,
+  ): Promise<Omit<JwtResponse, 'refresh_token'>> {
     const payload = { id: user.id, email: user.email };
 
     return {
       access_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '5m',
+        expiresIn: '30m',
       }),
     };
   }

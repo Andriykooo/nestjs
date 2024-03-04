@@ -19,6 +19,8 @@ export class Game {
   @ManyToMany(() => User, (user) => user.games)
   users: User[];
 
-  @OneToMany(() => GameComment, (gameComment) => gameComment.game)
+  @OneToMany(() => GameComment, (gameComment) => gameComment.game, {
+    cascade: true,
+  })
   gameComments: GameComment[];
 }

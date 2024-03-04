@@ -1,5 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsAlphanumeric,
   IsEmail,
   IsInt,
   IsNotEmpty,
@@ -15,16 +15,20 @@ export class CreateUsersDto {
   @IsString()
   @MinLength(2, { message: 'Name must have atleast 2 characters.' })
   @IsNotEmpty()
+  @ApiProperty()
   name: string;
 
   @IsNotEmpty()
   @IsEmail({}, { message: 'Please provide valid Email.' })
+  @ApiProperty()
   email: string;
 
   @IsInt()
+  @ApiProperty()
   age: number;
 
   @IsString()
+  @ApiProperty()
   gender: string;
 
   picture: string;
@@ -38,5 +42,6 @@ export class CreateUsersDto {
       one number and one special character
     `,
   })
+  @ApiProperty()
   password: string;
 }

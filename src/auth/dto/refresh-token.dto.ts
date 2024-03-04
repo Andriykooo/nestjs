@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateGameCommentDto {
+export class RefreshTokenDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  comment: string;
+  refresh_token: string;
 }

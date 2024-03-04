@@ -36,9 +36,8 @@ export class GamesService {
   }
 
   async update(id: number, updateGameDto: UpdateGameDto): Promise<Game> {
-    await this.findOne(id);
+    const game = await this.findOne(id);
 
-    const game: Game = new Game();
     game.name = updateGameDto.name;
 
     return await this.gameRepository.save(game);

@@ -11,3 +11,8 @@ export type JwtResponse = {
 export type JwtRequest = {
   user: JwtPayload;
 };
+
+export type LoginPayload = {
+  email: string;
+  password: string;
+};

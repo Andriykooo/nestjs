@@ -39,7 +39,7 @@ export class User {
    */
   gender: string;
 
-  @ManyToMany(() => Game, (game) => game.users)
+  @ManyToMany(() => Game, (game) => game.users, { cascade: true })
   @JoinTable()
   games: Game[];
 
