@@ -17,13 +17,10 @@ async function bootstrap() {
   app.use('/media', express.static(join(__dirname, '..', 'media')));
 
   const config = new DocumentBuilder()
-    .setTitle('Cats')
-    .setDescription('The cats API description')
+    .setTitle('Epic Gay Store')
+    .setDescription('The Epic Gay Store API description')
     .setVersion('1.0')
-    .addBearerAuth(
-      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
-      'access_token',
-    )
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

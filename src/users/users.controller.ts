@@ -21,7 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { JwtRequest } from 'src/auth/auth.type';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateGameCommentDto } from 'src/game-comments/dto/create-game-comment.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -45,6 +45,7 @@ export class UsersController {
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   me(@Request() req: JwtRequest) {
     return this.userService.findOne(+req.user.id);
   }
@@ -52,6 +53,7 @@ export class UsersController {
   @Patch('update')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   update(@Request() req: JwtRequest, @Body() updateUserDto: UpdateUsersDto) {
     return this.userService.update(+req.user.id, updateUserDto);
   }
@@ -59,6 +61,7 @@ export class UsersController {
   @Delete('delete')
   @HttpCode(204)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   remove(@Request() req: JwtRequest) {
     return this.userService.remove(+req.user.id);
   }
@@ -66,6 +69,7 @@ export class UsersController {
   @Post('picture')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -86,6 +90,7 @@ export class UsersController {
   @Post('add-game/:gameId')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   addGame(@Request() req: JwtRequest, @Param('gameId') gameId: string) {
     return this.userService.addGame(+req.user.id, +gameId);
   }
@@ -93,6 +98,7 @@ export class UsersController {
   @Patch('remove-game/:gameId')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   removeGame(@Request() req: JwtRequest, @Param('gameId') gameId: string) {
     return this.userService.removeGame(+req.user.id, +gameId);
   }
@@ -100,6 +106,7 @@ export class UsersController {
   @Post('add-comment/:gameId')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   addComment(
     @Request() req: JwtRequest,
     @Param('gameId') gameId: string,
@@ -115,6 +122,7 @@ export class UsersController {
   @Delete('remove-comment/:commentId')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   removeComment(
     @Request() req: JwtRequest,
     @Param('commentId') commentId: string,
