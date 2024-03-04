@@ -22,7 +22,6 @@ import { diskStorage } from 'multer';
 import { JwtAuthGuard } from 'src/modules/auth/guard/jwt-auth.guard';
 import { JwtRequest } from 'src/modules/auth/auth.type';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { CreateGameCommentDto } from 'src/modules/game-comments/dto/create-game-comment.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('user')
@@ -113,32 +112,5 @@ export class UsersController {
   @ApiBearerAuth()
   removeGame(@Request() req: JwtRequest, @Param('gameId') gameId: string) {
     return this.userService.removeGame(+req.user.id, +gameId);
-  }
-
-  @Post('add-comment/:gameId')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  addComment(
-    @Request() req: JwtRequest,
-    @Param('gameId') gameId: string,
-    @Body() createGameCommentDto: CreateGameCommentDto,
-  ) {
-    return this.userService.addComment(
-      +req.user.id,
-      +gameId,
-      createGameCommentDto,
-    );
-  }
-
-  @Delete('remove-comment/:commentId')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  removeComment(
-    @Request() req: JwtRequest,
-    @Param('commentId') commentId: string,
-  ) {
-    return this.userService.removeComment(+req.user.id, +commentId);
   }
 }

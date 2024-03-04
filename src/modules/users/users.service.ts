@@ -10,15 +10,12 @@ import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { GamesService } from 'src/modules/games/games.service';
-import { GameCommentsService } from 'src/modules/game-comments/game-comments.service';
-import { CreateGameCommentDto } from 'src/modules/game-comments/dto/create-game-comment.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private gamesSrvice: GamesService,
-    private gameCommentsService: GameCommentsService,
   ) {}
 
   async create(createUserDto: CreateUsersDto): Promise<User> {
@@ -111,20 +108,5 @@ export class UsersService {
     user.games = user.games.filter((game) => game.id !== gameId);
 
     await this.userRepository.save(user);
-  }
-
-  async addComment(
-    userId: number,
-    gameId: number,
-    createGameCommentDto: CreateGameCommentDto,
-  ) {
-    const user = await this.findOne(userId);
-    const game = await this.gamesSrvice.findOne(gameId);
-    await this.gameCommentsService.create(user, game, createGameCommentDto);
-  }
-
-  async removeComment(userId: number, commentId: number) {
-    await this.findOne(userId);
-    await this.gameCommentsService.remove(commentId, userId);
   }
 }

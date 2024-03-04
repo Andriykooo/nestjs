@@ -4,10 +4,9 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/users.entity';
 import { GamesModule } from 'src/modules/games/games.module';
-import { GameCommentsModule } from 'src/modules/game-comments/game-comments.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), GamesModule, GameCommentsModule],
+  imports: [TypeOrmModule.forFeature([User]), GamesModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

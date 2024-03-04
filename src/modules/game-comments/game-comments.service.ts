@@ -10,12 +10,16 @@ import {
   PaginationOptionsDto,
 } from 'src/shared/dto/pagination.dto';
 import { convertStringToNumber } from 'src/shared/utils/convertStringToNumber';
+import { UsersService } from '../users/users.service';
+import { GamesService } from '../games/games.service';
 
 @Injectable()
 export class GameCommentsService {
   constructor(
     @InjectRepository(GameComment)
     private readonly gameCommentsRepository: Repository<GameComment>,
+    private usersService: UsersService,
+    private gamesService: GamesService,
   ) {}
 
   async create(
@@ -67,5 +71,20 @@ export class GameCommentsService {
     }
 
     await this.gameCommentsRepository.delete(id);
+  }
+
+  async addComment(
+    userId: number,
+    gameId: number,
+    createGameCommentDto: CreateGameCommentDto,
+  ) {
+    const user = await this.usersService.findOne(userId);
+    const game = await this.gamesService.findOne(gameId);
+    await this.create(user, game, createGameCommentDto);
+  }
+
+  async removeComment(userId: number, commentId: number) {
+    await this.usersService.findOne(userId);
+    await this.remove(commentId, userId);
   }
 }
