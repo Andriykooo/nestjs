@@ -74,16 +74,11 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUsersDto): Promise<User> {
-    await this.findOne(id);
-
-    const user: User = new User();
+    const user = await this.findOne(id);
 
     user.name = updateUserDto.name;
     user.age = updateUserDto.age;
-    user.email = updateUserDto.email;
-    user.password = updateUserDto.password;
     user.gender = updateUserDto.gender;
-    user.id = id;
 
     return await this.userRepository.save(user);
   }

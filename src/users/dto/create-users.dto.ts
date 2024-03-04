@@ -1,12 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsString,
   Matches,
+  MaxLength,
   MinLength,
 } from 'class-validator';
+import { Gender } from '../enum/gender.enum';
 
 const passwordRegEx =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -14,6 +17,9 @@ const passwordRegEx =
 export class CreateUsersDto {
   @IsString()
   @MinLength(2, { message: 'Name must have atleast 2 characters.' })
+  @MaxLength(40, {
+    message: 'Name is too long, must be less than 40 characters.',
+  })
   @IsNotEmpty()
   @ApiProperty()
   name: string;
@@ -27,11 +33,11 @@ export class CreateUsersDto {
   @ApiProperty()
   age: number;
 
-  @IsString()
+  @IsEnum(Gender)
   @ApiProperty()
   gender: string;
 
-  picture: string;
+  picture: Express.Multer.File;
 
   @IsNotEmpty()
   @Matches(passwordRegEx, {

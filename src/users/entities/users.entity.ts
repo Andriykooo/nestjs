@@ -9,6 +9,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Gender } from '../enum/gender.enum';
 
 @Entity()
 export class User {
@@ -31,12 +32,7 @@ export class User {
   @Column({ type: 'varchar' })
   password: string;
 
-  @Column({ type: 'enum', enum: ['m', 'f', 'u'] })
-  /**
-   * m - male
-   * f - female
-   * u - unspecified
-   */
+  @Column({ type: 'enum', enum: Gender })
   gender: string;
 
   @ManyToMany(() => Game, (game) => game.users, { cascade: true })
