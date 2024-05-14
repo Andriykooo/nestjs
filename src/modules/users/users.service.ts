@@ -8,16 +8,18 @@ import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUsersDto } from './dto/update-users.dto';
 import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { GamesService } from 'src/modules/games/games.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { defaultDaysToDeath } from 'src/shared/constants/defaultDaysToDeath';
+import { S3Service } from '../s3/s3.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private gamesSrvice: GamesService,
+    private readonly s3Service: S3Service,
   ) {}
 
   async create(createUserDto: CreateUsersDto): Promise<User> {
@@ -89,9 +91,16 @@ export class UsersService {
   }
 
   async uploadPicture(id: number, file: Express.Multer.File) {
-    const user = await this.findOne(id);
+    if (!file) {
+      throw new BadRequestException('Wrong file format');
+    }
 
-    user.picture = process.env.APP_URL + '/' + file.path;
+    const user = await this.findOne(id);
+    const key = `avatars/${user.id}-${Date.now()}-${file.originalname}`;
+
+    const pictureUrl = await this.s3Service.uploadFile(key, file.buffer);
+
+    user.picture = pictureUrl;
 
     return await this.userRepository.save(user);
   }
