@@ -37,8 +37,6 @@ export class CreateUsersDto {
   @ApiProperty()
   gender: string;
 
-  picture: Express.Multer.File;
-
   @IsNotEmpty()
   @Matches(passwordRegEx, {
     message: `Password must contain
@@ -50,4 +48,7 @@ export class CreateUsersDto {
   })
   @ApiProperty()
   password: string;
+
+  picture: Express.Multer.File;
+  daysToDeath: number;
 }

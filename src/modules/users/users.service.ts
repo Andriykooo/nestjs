@@ -10,6 +10,8 @@ import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { GamesService } from 'src/modules/games/games.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { defaultDaysToDeath } from 'src/shared/constants/defaultDaysToDeath';
 
 @Injectable()
 export class UsersService {
@@ -36,6 +38,7 @@ export class UsersService {
     user.password = hashedPassword;
     user.gender = createUserDto.gender;
     user.picture = '';
+    user.daysToDeath = defaultDaysToDeath;
     return this.userRepository.save(user);
   }
 
@@ -98,6 +101,7 @@ export class UsersService {
     const game = await this.gamesSrvice.findOne(gameId);
 
     user.games.push(game);
+    user.daysToDeath = defaultDaysToDeath;
 
     await this.userRepository.save(user);
   }
@@ -108,5 +112,20 @@ export class UsersService {
     user.games = user.games.filter((game) => game.id !== gameId);
 
     await this.userRepository.save(user);
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async removeDayToDeath() {
+    const users = await this.userRepository.find();
+
+    for (const user of users) {
+      user.daysToDeath -= 1;
+
+      if (user.daysToDeath === 0) {
+        await this.userRepository.remove(user);
+      } else {
+        await this.userRepository.save(user);
+      }
+    }
   }
 }

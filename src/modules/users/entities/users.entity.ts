@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Gender } from '../enum/gender.enum';
+import { defaultDaysToDeath } from 'src/shared/constants/defaultDaysToDeath';
 
 @Entity()
 export class User {
@@ -25,9 +26,6 @@ export class User {
   @Column({ type: 'int' })
   age: number;
 
-  @Column({ type: 'varchar' })
-  picture: string;
-
   @Exclude()
   @Column({ type: 'varchar' })
   password: string;
@@ -41,4 +39,10 @@ export class User {
 
   @OneToMany(() => GameComment, (gameComment) => gameComment.user)
   gameComments: GameComment[];
+
+  @Column({ type: 'varchar' })
+  picture: string;
+
+  @Column({ type: 'int', default: defaultDaysToDeath })
+  daysToDeath: number;
 }

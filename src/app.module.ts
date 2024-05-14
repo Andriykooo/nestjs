@@ -10,9 +10,11 @@ import { GamesModule } from './modules/games/games.module';
 import { Game } from './modules/games/entities/game.entity';
 import { GameCommentsModule } from './modules/game-comments/game-comments.module';
 import { GameComment } from './modules/game-comments/entities/game-comment.entity';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
