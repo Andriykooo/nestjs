@@ -18,10 +18,9 @@ import { UsersService } from './users.service';
 import { UpdateUsersDto } from './dto/update-users.dto';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { JwtAuthGuard } from 'src/modules/auth/guard/jwt-auth.guard';
 import { JwtRequest } from 'src/modules/auth/auth.type';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('user')
@@ -69,28 +68,7 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        image: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './media',
-        filename: (_req, file, callback) => {
-          callback(null, file.originalname);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('file'))
   uploadPicture(
     @Request() req: JwtRequest,
     @UploadedFile() file: Express.Multer.File,
